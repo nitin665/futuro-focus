@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Stack Web Development Bootcamp – Futuro Focus</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ══════════════════════════════════════════
+       ROOT & RESET
+    ══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #07102a;
+      --navy-mid:    #0a1840;
+      --navy-light:  #0d2060;
+      --royal:       #1040b0;
+      --blue:        #1a6bff;
+      --blue-bright: #38b6ff;
+      --blue-glow:   rgba(26,107,255,0.35);
+      --white:       #ffffff;
+      --off-white:   #f4f7ff;
+      --text-dark:   #0d1b3e;
+      --text-mid:    #3a4a6b;
+      --text-muted:  #7a8aab;
+      --success:     #10b981;
+      --success-bg:  #ecfdf5;
+      --locked-col:  #9aa5bb;
+      --card-shadow: 0 2px 20px rgba(10,24,64,0.09), 0 1px 4px rgba(0,0,0,0.05);
+      --card-hover:  0 10px 40px rgba(26,107,255,0.14), 0 2px 8px rgba(0,0,0,0.07);
+      --radius:      16px;
+      --font:        'Josefin Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--off-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════════ */
+    .ff-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      padding: 0 2.5rem;
+      background: rgba(7, 16, 42, 0.72);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(56, 182, 255, 0.10);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.28);
+    }
+
+    .ff-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-right: 3rem;
+      flex-shrink: 0;
+    }
+    .ff-logo-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, #1a6bff, #38b6ff);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #fff;
+      box-shadow: 0 4px 14px rgba(26,107,255,0.45);
+    }
+    .ff-logo-text {
+      font-family: var(--font);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .ff-logo-text em {
+      font-style: normal;
+      color: var(--blue-bright);
+    }
+
+    .ff-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      list-style: none;
+      flex: 1;
+    }
+    .ff-nav-links li a {
+      display: inline-block;
+      padding: 6px 14px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 6px;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .ff-nav-links li a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 14px; right: 14px;
+      height: 2px;
+      background: var(--blue-bright);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ff-nav-links li a:hover { color: #fff; }
+    .ff-nav-links li a:hover::after { transform: scaleX(1); }
+
+    .ff-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+    .btn-logout {
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.75);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-logout:hover {
+      border-color: var(--blue-bright);
+      color: var(--blue-bright);
+      background: rgba(56,182,255,0.07);
+    }
+
+    /* Hamburger on mobile */
+    .nav-toggler {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin-left: auto;
+    }
+    @media (max-width: 768px) {
+      .ff-navbar { padding: 0 1.2rem; }
+      .ff-nav-links, .ff-nav-right { display: none; }
+      .ff-nav-links.open { display: flex; flex-direction: column; position: absolute; top: 68px; left: 0; right: 0; background: rgba(7,16,42,0.97); padding: 1rem; gap: 0; border-bottom: 1px solid rgba(56,182,255,0.12); }
+      .ff-nav-links.open li a { padding: 12px 16px; font-size: 0.9rem; }
+      .nav-toggler { display: block; }
+      .ff-logo-wrap { margin-right: 0; }
+    }
+
+    /* ══════════════════════════════════════════
+       COURSE HERO  (dark navy, matches screenshot)
+    ══════════════════════════════════════════ */
+    .course-hero {
+      background:
+        radial-gradient(ellipse 70% 90% at 75% 40%, #163d8a 0%, transparent 65%),
+        radial-gradient(ellipse 50% 70% at 10% 70%, #0b1e5e 0%, transparent 60%),
+        linear-gradient(160deg, #07102a 0%, #0a1840 40%, #091550 70%, #07102a 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 4rem 0 5rem;
+    }
+
+    /* Dot grid pattern */
+    .course-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(56,182,255,0.18) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    /* Ambient glow blobs */
+    .hero-glow-1 {
+      position: absolute;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,107,255,0.22) 0%, transparent 70%);
+      top: -120px; right: -60px;
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,182,255,0.14) 0%, transparent 70%);
+      bottom: -80px; left: 5%;
+      pointer-events: none;
+    }
+    /* Wave bottom edge */
+    .course-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 70px;
+      background: var(--off-white);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 2px;
+      background: var(--blue-bright);
+      border-radius: 2px;
+    }
+
+    .hero-title {
+      font-family: var(--font);
+      font-size: clamp(1.9rem, 4.5vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.12;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.1rem;
+      text-transform: uppercase;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--blue-bright);
+    }
+
+    .hero-desc {
+      font-size: 0.97rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.72);
+      max-width: 600px;
+      line-height: 1.75;
+      margin-bottom: 2.2rem;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(56,182,255,0.25);
+      color: rgba(255,255,255,0.88);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 30px;
+    }
+    .hero-badge i { color: var(--blue-bright); font-size: 0.72rem; }
+
+    /* ══════════════════════════════════════════
+       MAIN WHITE CONTENT AREA
+    ══════════════════════════════════════════ */
+    .main-content {
+      background: var(--off-white);
+      padding-bottom: 5rem;
+    }
+    .content-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* ══════════════════════════════════════════
+       PROGRESS CARD
+    ══════════════════════════════════════════ */
+    .progress-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,107,255,0.08);
+      padding: 1.5rem 1.75rem;
+      margin-top: -1.8rem;
+      position: relative;
+      z-index: 10;
+    }
+    .progress-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .progress-count {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+    .progress-count span { color: var(--blue); }
+    .pbar-wrap {
+      background: #e8f0ff;
+      border-radius: 20px;
+      height: 9px;
+      overflow: hidden;
+    }
+    .pbar-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-bright));
+      transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 10px rgba(26,107,255,0.35);
+    }
+    .progress-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* ══════════════════════════════════════════
+       SECTION HEADING
+    ══════════════════════════════════════════ */
+    .section-heading {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-dark);
+      margin: 2.25rem 0 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-heading i { color: var(--blue); }
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(26,107,255,0.15), transparent);
+    }
+
+    /* ══════════════════════════════════════════
+       LECTURE CARDS
+    ══════════════════════════════════════════ */
+    .lecture-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,107,255,0.07);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 0.9rem;
+      text-decoration: none;
+      color: inherit;
+    }
+    .lecture-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--blue);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      border-radius: 0 4px 4px 0;
+    }
+    .lecture-card.lec-unlocked:hover {
+      box-shadow: var(--card-hover);
+      transform: translateY(-2px);
+      border-color: rgba(26,107,255,0.16);
+    }
+    .lecture-card.lec-unlocked:hover::before { transform: scaleY(1); }
+    .lecture-card.lec-locked {
+      cursor: not-allowed;
+      opacity: 0.58;
+      background: #fafbfd;
+    }
+    .lecture-card.lec-completed { border-color: rgba(16,185,129,0.18); }
+    .lecture-card.lec-completed::before { background: var(--success); transform: scaleY(1); }
+
+    .lec-icon-wrap {
+      width: 50px; height: 50px;
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      transition: all 0.25s;
+    }
+    .icon-play { background: #e8f0ff; color: var(--blue); }
+    .icon-lock { background: #f1f3f8; color: var(--locked-col); }
+    .icon-done { background: var(--success-bg); color: var(--success); }
+
+    .lecture-card.lec-unlocked:hover .icon-play {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(26,107,255,0.38);
+      transform: scale(1.07);
+    }
+
+    .lec-meta { flex: 1; min-width: 0; }
+    .lec-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .lec-title {
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .lec-duration {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 400;
+    }
+
+    .lec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-done     { background: var(--success-bg); color: var(--success); }
+    .badge-unlocked { background: #e8f0ff; color: var(--blue); }
+    .badge-locked   { background: #f1f3f8; color: var(--locked-col); }
+
+    /* ══════════════════════════════════════════
+       CERTIFICATE BUTTON
+    ══════════════════════════════════════════ */
+    .cert-section {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .cert-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border-radius: 10px;
+      border: none;
+      cursor: not-allowed;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .cert-btn.cert-locked {
+      background: #e2e6f0;
+      color: #9aa5bb;
+      box-shadow: none;
+    }
+    .cert-btn.cert-unlocked {
+      background: linear-gradient(135deg, #1040b0 0%, #1a6bff 50%, #38b6ff 100%);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 28px rgba(26,107,255,0.42);
+    }
+    .cert-btn.cert-unlocked::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .cert-btn.cert-unlocked:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(26,107,255,0.55);
+    }
+    .cert-btn.cert-unlocked:hover::before { opacity: 1; }
+    .cert-btn.cert-unlocked:active { transform: translateY(-1px); }
+
+    .cert-hint {
+      margin-top: 0.65rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ══════════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════════ */
+    .ff-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(24px);
+      background: var(--navy);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 12px 22px;
+      border-radius: 40px;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+      z-index: 99999;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      pointer-events: none;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(56,182,255,0.18);
+    }
+    .ff-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .ff-toast i { color: var(--blue-bright); }
+
+    /* ══════════════════════════════════════════
+       FULLSCREEN LECTURE VIEWER
+    ══════════════════════════════════════════ */
+    #lectureViewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #050c1a;
+      z-index: 9999;
+      flex-direction: column;
+    }
+    #lectureViewer.active { display: flex; }
+
+    .viewer-bar {
+      background: rgba(7,16,42,0.96);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(56,182,255,0.10);
+      padding: 0 1.75rem;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 1rem;
+    }
+    .vbar-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(255,255,255,0.65);
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .vbar-back:hover { color: var(--blue-bright); }
+    .vbar-logo {
+      font-family: var(--font);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .vbar-logo em { font-style: normal; color: var(--blue-bright); }
+    .vbar-right { width: 140px; display: flex; justify-content: flex-end; }
+
+    .viewer-scroll {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .video-shell {
+      width: 100%;
+      max-width: 1060px;
+      padding: 1.5rem 1.5rem 0;
+    }
+    .video-box {
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.65);
+      aspect-ratio: 16/9;
+    }
+    .video-box video {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .viewer-meta {
+      width: 100%;
+      max-width: 1060px;
+      padding: 1.5rem;
+    }
+    .vmeta-num {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 0.4rem;
+    }
+    .vmeta-title {
+      font-family: var(--font);
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+    .vmeta-desc {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 1rem 1.3rem;
+      color: rgba(255,255,255,0.52);
+      font-size: 0.88rem;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+    .vmeta-done {
+      display: none;
+      margin-top: 1rem;
+      align-items: center;
+      gap: 9px;
+      background: rgba(16,185,129,0.09);
+      border: 1px solid rgba(16,185,129,0.22);
+      color: #34d399;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      border-radius: 9px;
+    }
+    .vmeta-done.show { display: inline-flex; }
+    .vmeta-next {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 1rem;
+      background: linear-gradient(135deg, var(--blue), var(--blue-bright));
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 11px 22px;
+      border-radius: 9px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 18px rgba(26,107,255,0.35);
+    }
+    .vmeta-next:hover { opacity: 0.88; transform: translateY(-1px); }
+    .vmeta-next.show { display: inline-flex; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .course-hero { padding: 2.5rem 0 4rem; }
+      .hero-title { font-size: 1.55rem; }
+      .lecture-card { padding: 1rem 1.1rem; gap: 0.75rem; }
+      .lec-icon-wrap { width: 44px; height: 44px; font-size: 0.95rem; border-radius: 11px; }
+      .lec-title { font-size: 0.88rem; }
+      .lec-badge { display: none; }
+      .video-shell { padding: 0.75rem 0.75rem 0; }
+      .viewer-meta { padding: 1rem 0.75rem; }
+      .viewer-bar { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     COURSE PAGE
+═══════════════════════════════════════════════ -->
+<div id="coursePage">
+
+  <!-- ── NAVBAR ── -->
+  <nav class="ff-navbar">
+    <a class="ff-logo-wrap" href="#">
+      <div class="ff-logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <span class="ff-logo-text">Futuro<em>Focus</em></span>
+    </a>
+
+    <button class="nav-toggler" onclick="document.querySelector('.ff-nav-links').classList.toggle('open')" aria-label="Toggle menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <ul class="ff-nav-links">
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">My Courses</a></li>
+      <li><a href="#">Profile</a></li>
+    </ul>
+
+    <div class="ff-nav-right">
+      <a href="#" class="btn-logout"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</a>
+    </div>
+  </nav>
+
+  <!-- ── COURSE HERO ── -->
+  <section class="course-hero">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="container hero-inner">
+      <div class="hero-eyebrow">Full Stack Development</div>
+      <h1 class="hero-title">Full Stack Web<br><em>Development</em> Bootcamp</h1>
+      <p class="hero-desc">Learn modern web development from scratch using HTML, CSS, JavaScript, Bootstrap, backend technologies, databases, and real-world projects.</p>
+      <div class="hero-badges">
+        <span class="hero-badge"><i class="fa-solid fa-film"></i>3 Lectures</span>
+        <span class="hero-badge"><i class="fa-solid fa-seedling"></i>Beginner Friendly</span>
+        <span class="hero-badge"><i class="fa-solid fa-infinity"></i>Lifetime Access</span>
+        <span class="hero-badge"><i class="fa-solid fa-language"></i>English</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIN WHITE AREA ── -->
+  <div class="main-content">
+    <div class="content-wrap">
+
+      <!-- PROGRESS -->
+      <div class="progress-card">
+        <div class="progress-label"><i class="fa-solid fa-chart-line me-1"></i>Course Progress</div>
+        <div class="progress-count" id="progressCount"><span id="completedNum">0</span>&nbsp;/ 3 Completed</div>
+        <div class="pbar-wrap">
+          <div class="pbar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="progress-sub" id="progressSub">Start watching to track your progress.</div>
+      </div>
+
+      <!-- LECTURE LIST -->
+      <div class="section-heading"><i class="fa-solid fa-list-ul"></i>Course Content</div>
+
+      <div id="lectureList">
+
+        <!-- CARD 0 -->
+        <div class="lecture-card lec-unlocked" id="card-0" onclick="openLecture(0)">
+          <div class="lec-icon-wrap icon-play" id="icon-0"><i class="fa-solid fa-play"></i></div>
+          <div class="lec-meta">
+            <div class="lec-num">Lecture 01</div>
+            <div class="lec-title">Introduction to Full Stack Development</div>
+            <div class="lec-duration"><i class="fa-regular fa-clock"></i>&nbsp;~15 min</div>
+          </div>
+          <span class="lec-badge badge-unlocked" id="badge-0"><i class="fa-solid fa-play"></i>&nbsp;Start</span>
+        </div>
+
+        <!-- CARD 1 -->
+        <div class="lecture-card lec-locked" id="card-1">
+          <div class="lec-icon-wrap icon-lock" id="icon-1"><i class="fa-solid fa-lock"></i></div>
+          <div class="lec-meta">
+            <div class="lec-num">Lecture 02</div>
+            <div class="lec-title">HTML &amp; CSS Fundamentals</div>
+            <div class="lec-duration"><i class="fa-regular fa-clock"></i>&nbsp;~20 min</div>
+          </div>
+          <span class="lec-badge badge-locked" id="badge-1"><i class="fa-solid fa-lock"></i>&nbsp;Locked</span>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="lecture-card lec-locked" id="card-2">
+          <div class="lec-icon-wrap icon-lock" id="icon-2"><i class="fa-solid fa-lock"></i></div>
+          <div class="lec-meta">
+            <div class="lec-num">Lecture 03</div>
+            <div class="lec-title">JavaScript Essentials</div>
+            <div class="lec-duration"><i class="fa-regular fa-clock"></i>&nbsp;~25 min</div>
+          </div>
+          <span class="lec-badge badge-locked" id="badge-2"><i class="fa-solid fa-lock"></i>&nbsp;Locked</span>
+        </div>
+
+      </div><!-- /lectureList -->
+
+      <!-- CERTIFICATE BUTTON -->
+      <div class="cert-section">
+        <button class="cert-btn cert-locked" id="certBtn" disabled>
+          <i class="fa-solid fa-lock" id="certIcon"></i>
+          <span id="certText">Unlock Certificate</span>
+        </button>
+        <div class="cert-hint" id="certHint">Complete all lectures to unlock your certificate.</div>
+      </div>
+
+    </div><!-- /content-wrap -->
+  </div><!-- /main-content -->
+
+</div><!-- /coursePage -->
+
+
+<!-- ═══════════════════════════════════════════════
+     LECTURE VIEWER
+═══════════════════════════════════════════════ -->
+<div id="lectureViewer">
+
+  <div class="viewer-bar">
+    <button class="vbar-back" onclick="closeLecture()">
+      <i class="fa-solid fa-arrow-left"></i>Back to Course
+    </button>
+    <div class="vbar-logo">Futuro<em>Focus</em></div>
+    <div class="vbar-right"></div>
+  </div>
+
+  <div class="viewer-scroll">
+    <div class="video-shell">
+      <div class="video-box">
+        <!--
+          Django integration:
+          Replace src="" with {{ lecture.video_url }}
+          Example: <video id="lectureVideo" src="{{ lecture.video_url }}" controls>
+        -->
+        <video id="lectureVideo" controls controlsList="nodownload" preload="metadata">
+          <source src="" type="video/mp4" />
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+    </div>
+
+    <div class="viewer-meta">
+      <div class="vmeta-num" id="vmeta-num"></div>
+      <div class="vmeta-title" id="vmeta-title"></div>
+      <div class="vmeta-desc" id="vmeta-desc">
+        <!-- Replace with {{ lecture.description }} in Django template -->
+      </div>
+      <div class="vmeta-done" id="vmeta-done">
+        <i class="fa-solid fa-circle-check"></i>Lecture completed — next lecture unlocked!
+      </div>
+      <button class="vmeta-next" id="vmeta-next" onclick="goNext()">
+        Next Lecture&nbsp;<i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /lectureViewer -->
+
+<!-- TOAST -->
+<div class="ff-toast" id="ffToast"></div>
+
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ─────────────────────────────────────
+   LECTURES DATA
+   Replace videoUrl with Django template
+   variable e.g. "{{ lectures.0.video_url }}"
+───────────────────────────────────── */
+const LECTURES = [
+  {
+    num:   'Lecture 01',
+    title: 'Introduction to Full Stack Development',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    desc: 'Get a comprehensive overview of the full stack landscape. Understand the separation between front-end and back-end, explore the technologies you will master, and set up a professional development environment.'
+  },
+  {
+    num:   'Lecture 02',
+    title: 'HTML & CSS Fundamentals',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    desc: 'Master the core building blocks of the web. Learn HTML5 semantic markup, CSS3 styling, Flexbox, CSS Grid, and craft pixel-perfect, fully responsive page layouts from scratch.'
+  },
+  {
+    num:   'Lecture 03',
+    title: 'JavaScript Essentials',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    desc: 'Unlock the power of interactivity. Deep-dive into JavaScript variables, functions, events, DOM manipulation, ES6+ syntax, and async programming to build dynamic, real-world web experiences.'
+  }
+];
+
+/* ─────────────────────────────────────
+   STATE — Local Storage backed
+───────────────────────────────────── */
+const LS_KEY = 'ff_fswd_state_v2';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { completed: [false,false,false], unlocked: [true,false,false] };
+}
+function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
+
+let STATE = loadState();
+let activeLecture = null;
+
+/* ─────────────────────────────────────
+   RENDER CARDS
+───────────────────────────────────── */
+function renderCards() {
+  for (let i = 0; i < 3; i++) {
+    const card  = document.getElementById('card-'  + i);
+    const icon  = document.getElementById('icon-'  + i);
+    const badge = document.getElementById('badge-' + i);
+
+    card.classList.remove('lec-unlocked','lec-locked','lec-completed');
+
+    if (STATE.completed[i]) {
+      card.classList.add('lec-unlocked','lec-completed');
+      card.onclick = () => openLecture(i);
+      icon.className = 'lec-icon-wrap icon-done';
+      icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+      badge.className = 'lec-badge badge-done';
+      badge.innerHTML = '<i class="fa-solid fa-circle-check"></i>&nbsp;Completed';
+
+    } else if (STATE.unlocked[i]) {
+      card.classList.add('lec-unlocked');
+      card.onclick = () => openLecture(i);
+      icon.className = 'lec-icon-wrap icon-play';
+      icon.innerHTML = '<i class="fa-solid fa-play"></i>';
+      badge.className = 'lec-badge badge-unlocked';
+      badge.innerHTML = '<i class="fa-solid fa-play"></i>&nbsp;Watch';
+
+    } else {
+      card.classList.add('lec-locked');
+      card.onclick = null;
+      icon.className = 'lec-icon-wrap icon-lock';
+      icon.innerHTML = '<i class="fa-solid fa-lock"></i>';
+      badge.className = 'lec-badge badge-locked';
+      badge.innerHTML = '<i class="fa-solid fa-lock"></i>&nbsp;Locked';
+    }
+  }
+  updateProgress();
+  updateCertBtn();
+}
+
+/* ─────────────────────────────────────
+   PROGRESS
+───────────────────────────────────── */
+function updateProgress() {
+  const done = STATE.completed.filter(Boolean).length;
+  const pct  = Math.round((done / 3) * 100);
+  document.getElementById('progressBar').style.width  = pct + '%';
+  document.getElementById('completedNum').textContent = done;
+  const sub = document.getElementById('progressSub');
+  if (done === 0)      sub.textContent = 'Start watching to track your progress.';
+  else if (done === 3) sub.textContent = '🎉 Congratulations! You have completed this course.';
+  else                 sub.textContent = `Keep going! ${3-done} lecture${3-done>1?'s':''} remaining.`;
+}
+
+/* ─────────────────────────────────────
+   CERTIFICATE BUTTON
+───────────────────────────────────── */
+function updateCertBtn() {
+  const allDone = STATE.completed.every(Boolean);
+  const btn   = document.getElementById('certBtn');
+  const icon  = document.getElementById('certIcon');
+  const text  = document.getElementById('certText');
+  const hint  = document.getElementById('certHint');
+
+  if (allDone) {
+    btn.classList.replace('cert-locked','cert-unlocked');
+    btn.disabled = false;
+    btn.onclick  = viewCertificate;
+    icon.className = 'fa-solid fa-award';
+    text.textContent = 'View Certificate';
+    hint.textContent = '🏆 You have earned your certificate of completion!';
+  } else {
+    btn.classList.remove('cert-unlocked');
+    btn.classList.add('cert-locked');
+    btn.disabled = true;
+    btn.onclick  = null;
+    icon.className = 'fa-solid fa-lock';
+    text.textContent = 'Unlock Certificate';
+    const left = STATE.completed.filter(Boolean).length;
+    hint.textContent = left === 0
+      ? 'Complete all lectures to unlock your certificate.'
+      : `Complete ${3-left} more lecture${3-left>1?'s':''} to unlock your certificate.`;
+  }
+}
+function viewCertificate() {
+  showToast('<i class="fa-solid fa-award"></i> Opening your certificate...');
+}
+
+/* ─────────────────────────────────────
+   OPEN VIEWER
+───────────────────────────────────── */
+function openLecture(idx) {
+  if (!STATE.unlocked[idx]) return;
+  activeLecture = idx;
+  const lec = LECTURES[idx];
+
+  document.getElementById('vmeta-num').textContent   = lec.num;
+  document.getElementById('vmeta-title').textContent = lec.title;
+  document.getElementById('vmeta-desc').textContent  = lec.desc;
+
+  const vid = document.getElementById('lectureVideo');
+  vid.src = lec.videoUrl;
+  vid.load();
+
+  document.getElementById('vmeta-done').classList.remove('show');
+  document.getElementById('vmeta-next').classList.remove('show');
+
+  if (STATE.completed[idx]) {
+    document.getElementById('vmeta-done').classList.add('show');
+    if (idx < 2) document.getElementById('vmeta-next').classList.add('show');
+  }
+
+  document.getElementById('lectureViewer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ─────────────────────────────────────
+   CLOSE VIEWER
+───────────────────────────────────── */
+function closeLecture() {
+  const vid = document.getElementById('lectureVideo');
+  vid.pause();
+  document.getElementById('lectureViewer').classList.remove('active');
+  document.body.style.overflow = '';
+  activeLecture = null;
+}
+
+/* ─────────────────────────────────────
+   NEXT LECTURE
+───────────────────────────────────── */
+function goNext() {
+  if (activeLecture !== null && activeLecture < 2) openLecture(activeLecture + 1);
+}
+
+/* ─────────────────────────────────────
+   VIDEO ENDED → COMPLETE & UNLOCK
+───────────────────────────────────── */
+document.getElementById('lectureVideo').addEventListener('ended', () => {
+  if (activeLecture === null) return;
+  const i = activeLecture;
+
+  if (!STATE.completed[i]) {
+    STATE.completed[i] = true;
+    if (i < 2) {
+      STATE.unlocked[i+1] = true;
+      showToast('<i class="fa-solid fa-lock-open"></i> Lecture ' + (i+2) + ' unlocked!');
+    } else {
+      showToast('<i class="fa-solid fa-trophy"></i> Course complete! Certificate unlocked!');
+    }
+    saveState();
+    renderCards();
+  }
+
+  document.getElementById('vmeta-done').classList.add('show');
+  if (i < 2) document.getElementById('vmeta-next').classList.add('show');
+});
+
+/* ─────────────────────────────────────
+   TOAST
+───────────────────────────────────── */
+let toastTimer;
+function showToast(html) {
+  const t = document.getElementById('ffToast');
+  t.innerHTML = html;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3600);
+}
+
+/* ─────────────────────────────────────
+   KEYBOARD ESC
+───────────────────────────────────── */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLecture(); });
+
+/* ─────────────────────────────────────
+   INIT
+───────────────────────────────────── */
+renderCards();
+</script>
+</body>
+</html>
