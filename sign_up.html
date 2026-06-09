@@ -437,14 +437,12 @@
     <form id="signinForm" novalidate>
       <label class="form-label" for="si-email">Email Address</label>
       <div class="input-wrap">
-        <input class="form-control-custom" type="email" id="si-email" placeholder="aarav@example.com" autocomplete="email"/>
-        <i class="fa-regular fa-envelope input-icon"></i>
+<input class="form-control-custom" type="email" id="si-email" name="email" placeholder="aarav@example.com" autocomplete="email"/>        <i class="fa-regular fa-envelope input-icon"></i>
       </div>
 
       <label class="form-label" for="si-password">Password</label>
       <div class="input-wrap">
-        <input class="form-control-custom" type="password" id="si-password" placeholder="Enter your password" autocomplete="current-password"/>
-        <i class="fa-solid fa-lock input-icon"></i>
+<input class="form-control-custom" type="password" id="si-password" name="password" placeholder="Enter your password" autocomplete="current-password"/>        <i class="fa-solid fa-lock input-icon"></i>
         <button type="button" class="pw-toggle" onclick="togglePw('si-password',this)"><i class="fa-regular fa-eye"></i></button>
       </div>
 
@@ -691,11 +689,12 @@ async function djPost(url, payload) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': getCsrfToken(),
+      'X-CSRFToken': getCsrfToken()
     },
     credentials: 'same-origin',
     body: JSON.stringify(payload),
   });
+
   return response.json();
 }
 
@@ -1018,30 +1017,70 @@ document.getElementById('openSignin').addEventListener('click', e => {
 document.getElementById('closeSignin').addEventListener('click', () => closeOverlay('signinOverlay'));
 document.getElementById('backToSignup').addEventListener('click', e => { e.preventDefault(); closeOverlay('signinOverlay'); });
 
-document.getElementById('signinForm').addEventListener('submit', function (e) {
-  e.preventDefault(); let valid = true;
+document.getElementById('signinForm').addEventListener('submit', async function (e) {
+
+  e.preventDefault();
+
   const emailEl = document.getElementById('si-email');
   const passEl  = document.getElementById('si-password');
   const msg     = document.getElementById('siMsg');
 
-  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) {
-    emailEl.classList.remove('is-invalid'); emailEl.classList.add('is-valid');
-  } else { emailEl.classList.remove('is-valid'); emailEl.classList.add('is-invalid'); valid = false; }
+  msg.textContent = '';
 
-  if (passEl.value.length >= 8) {
-    passEl.classList.remove('is-invalid'); passEl.classList.add('is-valid');
-  } else {
-    passEl.classList.remove('is-valid'); passEl.classList.add('is-invalid');
-    msg.textContent='Password must be at least 8 characters.'; msg.className='validation-msg error'; valid=false;
+  const email = emailEl.value.trim();
+  const password = passEl.value;
+
+  if (!email || !password) {
+    msg.textContent = 'Please enter email and password.';
+    msg.className = 'validation-msg error';
+    return;
   }
 
-  if (valid) {
-    const btn = document.querySelector('#signinForm .btn-primary-custom');
-    btn.querySelector('span').innerHTML = '<i class="fa-solid fa-check me-2"></i>Signed In!';
-    btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
-    btn.style.boxShadow  = '0 6px 24px rgba(16,185,129,0.4)';
-    msg.className = 'validation-msg';
+  try {
+
+    const response = await fetch('/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCsrfToken()
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      const btn = document.querySelector('#signinForm .btn-primary-custom');
+
+      btn.querySelector('span').innerHTML =
+        '<i class="fa-solid fa-check me-2"></i>Signed In!';
+
+      setTimeout(() => {
+        window.location.href = data.redirect;
+      }, 800);
+
+    } else {
+
+      msg.textContent = data.error;
+      msg.className = 'validation-msg error';
+
+      emailEl.classList.add('is-invalid');
+      passEl.classList.add('is-invalid');
+
+    }
+
+  } catch (error) {
+
+    console.error(error);   // Leave this here for debugging.
+    msg.textContent = 'Something went wrong.';
+    msg.className = 'validation-msg error';
+
   }
+
 });
 </script>
 </body>

@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 
 import json
 import random
@@ -184,3 +185,39 @@ def resend_otp(request):
     return JsonResponse({
         "success": True
     })
+
+def login_user(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid request"
+        })
+
+    data = json.loads(request.body)
+
+    email = data.get("email")
+    password = data.get("password")
+
+    user = authenticate(
+        request,
+        username=email,
+        password=password
+    )
+
+    if user is None:
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid email or password"
+        })
+
+    login(request, user)
+
+    return JsonResponse({
+        "success": True,
+        "redirect": "/home/"
+    })
+
+def logout_user(request):
+    logout(request)
+    return redirect('signup')
