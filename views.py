@@ -221,3 +221,126 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('signup')
+
+def forgot_password_send_otp(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid request"
+        })
+
+    data = json.loads(request.body)
+    email = data.get("email")
+
+    if not User.objects.filter(email=email).exists():
+        return JsonResponse({
+            "success": False,
+            "error": "No account found with this email address."
+        })
+
+    otp = str(random.randint(100000, 999999))
+
+    request.session["fp_otp"] = otp
+    request.session["fp_email"] = email
+    request.session["fp_otp_time"] = int(time.time())
+
+    send_mail(
+        "Futuro Focus - Password Reset OTP",
+        f"Your password reset OTP is: {otp}\n\nThis OTP is valid for 2 minutes.\n\nIf you did not request this, please ignore this email.",
+        "nitinsumna@gmail.com",  # or EMAIL_HOST_USER later
+        [email],
+        fail_silently=False,
+    )
+
+    return JsonResponse({
+        "success": True
+    })
+
+def forgot_password_verify_otp(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid request"
+        })
+
+    data = json.loads(request.body)
+
+    entered_otp = data.get("otp")
+
+    stored_otp = request.session.get("fp_otp")
+    otp_time = request.session.get("fp_otp_time")
+
+    if not stored_otp:
+        return JsonResponse({
+            "success": False,
+            "error": "OTP not found"
+        })
+
+    if int(time.time()) - otp_time > 120:
+        return JsonResponse({
+            "success": False,
+            "error": "OTP expired"
+        })
+
+    if entered_otp != stored_otp:
+        return JsonResponse({
+            "success": False,
+            "error": "Incorrect OTP"
+        })
+
+    # Mark OTP as verified
+    request.session["fp_otp_verified"] = True
+
+    return JsonResponse({
+        "success": True
+    })
+
+def forgot_password_reset(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid request"
+        })
+
+    if not request.session.get("fp_otp_verified"):
+        return JsonResponse({
+            "success": False,
+            "error": "OTP verification required"
+        })
+
+    data = json.loads(request.body)
+
+    new_password = data.get("password")
+
+    email = request.session.get("fp_email")
+
+    if not email:
+        return JsonResponse({
+            "success": False,
+            "error": "Session expired"
+        })
+
+    try:
+        user = User.objects.get(email=email)
+
+        user.set_password(new_password)
+        user.save()
+
+        # Clear forgot-password session data
+        request.session.pop("fp_otp", None)
+        request.session.pop("fp_email", None)
+        request.session.pop("fp_otp_time", None)
+        request.session.pop("fp_otp_verified", None)
+
+        return JsonResponse({
+            "success": True
+        })
+
+    except User.DoesNotExist:
+        return JsonResponse({
+            "success": False,
+            "error": "User not found"
+        })
